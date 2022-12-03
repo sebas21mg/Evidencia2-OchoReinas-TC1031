@@ -1,8 +1,8 @@
+/*En este programa la posición en 'x' y en 'y' se calculan a través de números aleatorios*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-// Objeto reina ----------------------------------------------
 
 struct queen
 {
@@ -173,7 +173,7 @@ int isSolved (int *last_i)
         }
         if (i > *last_i)
         {
-            printf("%d, ", i);
+            printf("Ya se ubicaron %d reinas\n", i + 1);
             *last_i = i;
         }
         queen_i = queen_i->following;
@@ -222,19 +222,10 @@ int main(void)
 
     createQueens(8);
         
-    int solved = 0, last_i = 0;
+    int solved = 0, last_i = -1;
     while (solved == 0){
         solved = isSolved(&last_i);
-        // printf("%d,", solved);
     }
 
-    // for (int i = 0; i<1000; i++){
-    //     solved = isSolved();
-    // }
-    // printf("%d\n", solved);
-    // testBoard();
-    // solved = isSolved();
-
-    // printf("%d\n", solved);
     printQueens();
 }
