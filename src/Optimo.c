@@ -125,36 +125,49 @@ void printQueens(void)
     printf("\n");
 }
 
-void randomizeQueen (struct queen *queen1, struct queen *queen2)
+void nose (struct queen *queen1, struct queen *queen2)
 {
     queen1->y_pos = randomNumber(1,8);
-    queen2->y_pos = randomNumber(1,8);
 }
 
 int isSolved (struct queen *queen1)
 {
-    int x_diff, y_diff;
+    int x_diff, y_diff, flag = 0;
     float slope;
-    struct queen *queen2 = queen1->following;
-    while (queen2 != start)
+    struct queen *queen2 = queen1->following, *checkpoint = queen1;
+    while (queen2 != checkpoint || flag == 1)
     {
         x_diff = queen2->x_pos - queen1->x_pos;
         y_diff = queen2->y_pos - queen1->y_pos;
         slope = (float)y_diff / (float)x_diff;
         printf("Entre (%d, %d) y (%d, %d): x_diff = %d, y_diff = %d, slope = %f\n", queen1->x_pos, queen1->y_pos, queen2->x_pos, queen2->y_pos, x_diff, y_diff, slope);
         if (y_diff == 0 || slope == 1 || slope == -1){
-            randomizeQueen(queen1, queen2);
+            queen1->y_pos = randomNumber(1,8);
+            queen2->y_pos = randomNumber(1,8);
+            checkpoint = queen2;
+            flag = 1;
+            printf("\nCheckpoint\n");
         }
-        else
-            queen2 = queen2->following;
+        else 
+        {
+            flag = 0;
+            if (queen2->following == start)
+                queen2 = queen1->following;
+            else
+                queen2 = queen2->following;
+        }
+        
+
     }
 
     if (queen1->following == start)
     {
-        // isSolved(num_queens_done, queen1->following);
+        printf("\n\n\n");
+        isSolved(queen1->following);
         return 1;
     }
     queen1 = queen1->following;
+    printf("\n");
     isSolved(queen1);
 }
 
