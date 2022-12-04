@@ -125,41 +125,37 @@ void printQueens(void)
     printf("\n");
 }
 
-void randomizeQueen (struct queen *index)
+void randomizeQueen (struct queen *queen1, struct queen *queen2)
 {
-    index->y_pos = randomNumber(1,8);
+    queen1->y_pos = randomNumber(1,8);
+    queen2->y_pos = randomNumber(1,8);
 }
 
-int compareQueens (int *last_i, struct queen *queen_i)
+int isSolved (struct queen *queen1)
 {
     int x_diff, y_diff;
     float slope;
-    struct queen *queen_j = queen_i->following;
-    while (queen_j != start)
+    struct queen *queen2 = queen1->following;
+    while (queen2 != start)
     {
-        x_diff = queen_j->x_pos - queen_i->x_pos;
-        y_diff = queen_j->y_pos - queen_i->y_pos;
+        x_diff = queen2->x_pos - queen1->x_pos;
+        y_diff = queen2->y_pos - queen1->y_pos;
         slope = (float)y_diff / (float)x_diff;
-        // printf("Entre [%d] y [%d]: %d %d\n", queen_i->x_pos, queen_j->x_pos, x_diff, y_diff);
+        printf("Entre (%d, %d) y (%d, %d): x_diff = %d, y_diff = %d, slope = %f\n", queen1->x_pos, queen1->y_pos, queen2->x_pos, queen2->y_pos, x_diff, y_diff, slope);
         if (y_diff == 0 || slope == 1 || slope == -1){
-            randomizeQueen(queen_j);
-            compareQueens(last_i, queen_i);
+            randomizeQueen(queen1, queen2);
         }
-
-        queen_j = queen_j->following;
+        else
+            queen2 = queen2->following;
     }
 
-    int id = queen_i->x_pos;
-    if (id > *last_i)
+    if (queen1->following == start)
     {
-        *last_i = id;
-        printf("Ya se ubicaron %d reinas\n", *last_i);
-    }
-
-    if (queen_i->following == start)
+        // isSolved(num_queens_done, queen1->following);
         return 1;
-    queen_i = queen_i->following;
-    compareQueens(last_i, queen_i);
+    }
+    queen1 = queen1->following;
+    isSolved(queen1);
 }
 
 void testBoard (void)
@@ -202,14 +198,13 @@ int main(void)
     srand(time(NULL));
 
     createQueens(8);
-    int solved = 0, last_i = -1;
-    struct queen *index = start;
+    int solved = 0;
 
     // testBoard();
-    // compareQueens(&last_i, index);
+    // isSolved(&num_queens_done, index);
         
     while (solved == 0){
-        solved = compareQueens(&last_i, start);
+        solved = isSolved(start);
     }
 
     printQueens();
