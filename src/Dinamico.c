@@ -103,7 +103,7 @@ void deleteQueens()
     }
 }
 
-void printQueens(void)
+void printQueens1(void)
 {
     printf("\n");
     if (noQueens() == 1)
@@ -111,6 +111,7 @@ void printQueens(void)
         printf("No existen reinas a mostrar\n");
         return;
     }
+
     int i;
     struct queen *temporary;
 
@@ -122,6 +123,37 @@ void printQueens(void)
         temporary = temporary->following;
     }
 
+    printf("\n");
+}
+
+void printQueens2(void)
+{
+    printf("\n");
+    if (noQueens() == 1)
+    {
+        printf("No existen reinas a mostrar\n");
+        return;
+    }
+
+    int i, j;
+    struct queen *temporary = start;
+
+    for (i = 0; i < 8; i++)
+    {
+        for (j = 0; j < 8; j++)
+        {
+            if (temporary->y_pos == i + 1)
+            {
+                if (temporary->x_pos == j + 1)
+                    printf("X  ");
+            }
+            else
+                printf("0  ");
+            temporary = temporary->following;
+        }
+        temporary = start;
+        printf("\n");
+    }
     printf("\n");
 }
 
@@ -141,7 +173,7 @@ void randomizeQueen(struct queen *changed_queen, struct queen *checkpoint)
     }
 }
 
-int placeQueen (struct queen *checkpoint)
+int placeQueen(struct queen *checkpoint)
 {
     int x_diff, y_diff, flag = 0, cntr = 1;
     float slope;
@@ -159,7 +191,7 @@ int placeQueen (struct queen *checkpoint)
             flag = 1;
             checkpoint->y_pos = randomNumber(1, 8);
             index = start;
-            cntr ++;
+            cntr++;
         }
         else
         {
@@ -196,9 +228,11 @@ int main(void)
 
     createQueens(8);
     printf("\nReinas iniciales:\n");
-    printQueens();
+    printQueens1();
+    printQueens2();
     solveBoard();
     printf("Tablero exitoso:\n");
-    printQueens();
+    printQueens1();
+    printQueens2();
     deleteQueens();
 }
