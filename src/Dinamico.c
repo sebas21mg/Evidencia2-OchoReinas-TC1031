@@ -1,4 +1,4 @@
-/*En este programa la posición en 'x' y en 'y' se calculan a través de números aleatorios*/
+// En este programa la posición en 'x' y en 'y' se calculan a través de números aleatorios
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -103,7 +103,7 @@ void deleteQueens()
     }
 }
 
-void printQueens1(void)
+void printQueens(void)
 {
     printf("\n");
     if (noQueens() == 1)
@@ -126,7 +126,7 @@ void printQueens1(void)
     printf("\n");
 }
 
-void printQueens2(void)
+void printBoard(void)
 {
     printf("\n");
     if (noQueens() == 1)
@@ -157,30 +157,14 @@ void printQueens2(void)
     printf("\n");
 }
 
-void randomizeQueen(struct queen *changed_queen, struct queen *checkpoint)
+int placeQueen(struct queen *checkpoint, int *attempts)
 {
-    struct queen *index = start;
-    changed_queen->y_pos = randomNumber(1, 8);
-    while (index != checkpoint->following)
-    {
-        if (index->y_pos == changed_queen->y_pos)
-        {
-            changed_queen->y_pos = randomNumber(1, 8);
-            index = start;
-        }
-        else
-            index = index->following;
-    }
-}
-
-int placeQueen(struct queen *checkpoint)
-{
-    int x_diff, y_diff, flag = 0, cntr = 1;
+    int x_diff, y_diff, cntr = 1;
     float slope;
     struct queen *index = start;
     while (index != checkpoint)
     {
-        if (cntr > 64)
+        if (cntr > 128)
             return 1;
         x_diff = index->x_pos - checkpoint->x_pos;
         y_diff = index->y_pos - checkpoint->y_pos;
@@ -188,27 +172,24 @@ int placeQueen(struct queen *checkpoint)
 
         if (y_diff == 0 || slope == 1 || slope == -1)
         {
-            flag = 1;
             checkpoint->y_pos = randomNumber(1, 8);
+            *attempts = *attempts + 1;
             index = start;
             cntr++;
         }
         else
-        {
-            flag = 0;
             index = index->following;
-        }
     }
     return 0;
 }
 
-void solveBoard(void)
+void solveBoard(int *attempts)
 {
     int i, repeat = 0;
     struct queen *index = start;
     for (i = 0; i < 8; i++)
     {
-        repeat = placeQueen(index);
+        repeat = placeQueen(index, attempts);
         if (repeat == 0)
             index = index->following;
         else
@@ -225,14 +206,15 @@ void solveBoard(void)
 int main(void)
 {
     srand(time(NULL));
+    int attempts = 1;
 
     createQueens(8);
     printf("\nReinas iniciales:\n");
-    printQueens1();
-    printQueens2();
-    solveBoard();
-    printf("Tablero exitoso:\n");
-    printQueens1();
-    printQueens2();
+    printQueens();
+    printBoard();
+    solveBoard(&attempts);
+    printf("Tablero exitoso con %d intentos:\n", attempts);
+    printQueens();
+    printBoard();
     deleteQueens();
 }
